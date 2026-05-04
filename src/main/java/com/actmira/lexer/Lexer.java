@@ -54,6 +54,13 @@ public class Lexer {
                     tok = new Token(TokenType.BANG, String.valueOf(ch));
                 }
             }
+            case '#' -> {
+                // Support '#' as a comment for script-like feel
+                while (ch != '\n' && ch != 0) {
+                    readChar();
+                }
+                return nextToken();
+            }
             case '/' -> {
                 if (peekChar() == '/') {
                     // It's a comment, skip to end of line

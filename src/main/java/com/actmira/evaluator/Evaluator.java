@@ -15,11 +15,11 @@ public class Evaluator {
     public static final MiraBoolean TRUE = new MiraBoolean(true);
     public static final MiraBoolean FALSE = new MiraBoolean(false);
 
-    // --- Global Game State ---
-    private static final java.util.Set<Integer> pressedKeys = new java.util.concurrent.ConcurrentHashMap<Integer, Boolean>().newKeySet();
+    public static final java.util.Set<Integer> pressedKeys = new java.util.concurrent.ConcurrentHashMap<Integer, Boolean>().newKeySet();
     private static int mouseX = 0;
     private static int mouseY = 0;
     private static boolean mousePressed = false;
+    public static final java.util.Set<String> importedPaths = new java.util.HashSet<>();
     private static final MiraObject BUILTIN_SENTINEL = new MiraObject() {
         @Override public String type() { return "BUILTIN"; }
         @Override public String inspect() { return "builtin function"; }
@@ -515,8 +515,6 @@ public class Evaluator {
         }
     }
 
-    // Sentinel string used to mark native built-in names
-    private static final MiraString BUILTIN_SENTINEL = new MiraString("__builtin__");
 
     private static MiraObject evalIdentifier(Identifier node, Environment env) {
         MiraObject val = env.get(node.getValue());
@@ -557,8 +555,6 @@ public class Evaluator {
         return true;
     }
 
-    // Tracks already-imported paths to prevent duplicate imports (public so Engine can reset it)
-    public static final Set<String> importedPaths = new HashSet<>();
 
     private static MiraObject evalImport(ImportStatement node, Environment env) {
         String rawPath = node.getPath();
