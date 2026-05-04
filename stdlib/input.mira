@@ -1,0 +1,28 @@
+# Mira Input Library
+# Provides easy access to keyboard and mouse state
+
+let KEY_LEFT = 37;
+let KEY_UP = 38;
+let KEY_RIGHT = 39;
+let KEY_DOWN = 40;
+let KEY_SPACE = 32;
+let KEY_ENTER = 10;
+let KEY_ESCAPE = 27;
+let KEY_W = 87;
+let KEY_A = 65;
+let KEY_S = 83;
+let KEY_D = 68;
+
+# Returns true if the key is currently pressed
+let isDown = fn(keyCode) {
+    return isKeyPressed(keyCode);
+};
+
+# Returns an object with mouse coordinates
+let getMouse = fn() {
+    return {
+        "x": getMouseX(),
+        "y": getMouseY(),
+        "pressed": isMousePressed()
+    };
+};

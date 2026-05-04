@@ -1,0 +1,106 @@
+# ============================================================
+# MiraIDE Example: Space Shooter Pro
+# Demonstrates: Input, Physics, Loops, and Native Graphics
+# ============================================================
+
+import "stdlib/canvas2d";
+import "stdlib/input";
+import "stdlib/physics";
+import "stdlib/math";
+
+let W = 800;
+let H = 600;
+
+# Game State
+let player = {"x": 400, "y": 500, "w": 40, "h": 40, "speed": 8};
+let bullets = [];
+let enemies = [];
+let score = 0;
+let gameOver = false;
+
+# Helper to spawn enemies
+let spawnEnemy = fn() {
+    let ex = math.random() * (W - 40);
+    return {"x": ex, "y": -40, "w": 40, "h": 40, "speed": 3 + math.random() * 3};
+};
+
+# Initialize enemies
+let i = 0;
+while (i < 5) {
+    let enemies = enemies + [spawnEnemy()];
+    let i = i + 1;
+}
+
+println("Starting Mira Space Shooter...");
+
+# Main Game Loop
+while (!gameOver) {
+    let cmds = "";
+    
+    # 1. Input Handling
+    if (isDown(KEY_A)) { let player.x = player.x - player.speed; }
+    if (isDown(KEY_D)) { let player.x = player.x + player.speed; }
+    if (isDown(KEY_SPACE)) {
+        # Fire rate control could be added here
+        let bullets = bullets + [{"x": player.x + 15, "y": player.y, "w": 10, "h": 20}];
+    }
+    
+    # 2. Update Bullets
+    let newBullets = [];
+    let bi = 0;
+    while (bi < length(bullets)) {
+        let b = bullets[bi];
+        let b.y = b.y - 15;
+        if (b.y > 0) {
+            let newBullets = newBullets + [b];
+            let cmds = cmds + drawRect(b.x, b.y, b.w, b.h, "#FFFF00");
+        }
+        let bi = bi + 1;
+    }
+    let bullets = newBullets;
+    
+    # 3. Update Enemies
+    let newEnemies = [];
+    let ei = 0;
+    while (ei < length(enemies)) {
+        let e = enemies[ei];
+        let e.y = e.y + e.speed;
+        
+        # Check collision with player
+        if (checkCollision(player, e)) {
+            let gameOver = true;
+        }
+        
+        # Check collision with bullets
+        let hit = false;
+        let bj = 0;
+        while (bj < length(bullets)) {
+            if (checkCollision(bullets[bj], e)) {
+                let hit = true;
+                let score = score + 10;
+            }
+            let bj = bj + 1;
+        }
+        
+        if (!hit && e.y < H) {
+            let newEnemies = newEnemies + [e];
+            let cmds = cmds + drawRoundRect(e.x, e.y, e.w, e.h, 10, "#FF4444");
+        } else {
+            let newEnemies = newEnemies + [spawnEnemy()];
+        }
+        let ei = ei + 1;
+    }
+    let enemies = newEnemies;
+    
+    # 4. Draw Player & Score
+    let cmds = cmds + drawRoundRect(player.x, player.y, player.w, player.h, 5, "#44FF44");
+    let cmds = cmds + drawText("SCORE: " + score, 20, 40, 20, "#FFFFFF", "Inter");
+    
+    # 5. Render Frame
+    renderCanvas2d(W, H, "#0C0E12", cmds);
+    
+    # Keep it at ~60 FPS
+    sleep(16);
+}
+
+println("Game Over! Final Score: " + score);

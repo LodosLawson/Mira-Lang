@@ -15,6 +15,16 @@ public class Evaluator {
     public static final MiraBoolean TRUE = new MiraBoolean(true);
     public static final MiraBoolean FALSE = new MiraBoolean(false);
 
+    // --- Global Game State ---
+    private static final java.util.Set<Integer> pressedKeys = new java.util.concurrent.ConcurrentHashMap<Integer, Boolean>().newKeySet();
+    private static int mouseX = 0;
+    private static int mouseY = 0;
+    private static boolean mousePressed = false;
+    private static final MiraObject BUILTIN_SENTINEL = new MiraObject() {
+        @Override public String type() { return "BUILTIN"; }
+        @Override public String inspect() { return "builtin function"; }
+    };
+
     public static MiraObject eval(Node node, Environment env) {
         if (node instanceof Program) {
             return evalProgram((Program) node, env);
@@ -232,6 +242,33 @@ public class Evaluator {
                     catch (Exception e) { return new MiraError("writeFile failed: " + e.getMessage()); }
                 }
 
+                // --- NEW GAME ENGINE BUILT-INS ---
+                if (name.equals("isKeyPressed") && !bargs.isEmpty()) {
+                    int code = ((MiraInteger)bargs.get(0)).getValue();
+                    return pressedKeys.contains(code) ? TRUE : FALSE;
+                }
+                if (name.equals("getMouseX")) return new MiraInteger(mouseX);
+                if (name.equals("getMouseY")) return new MiraInteger(mouseY);
+                if (name.equals("isMousePressed")) return mousePressed ? TRUE : FALSE;
+                
+                if (name.equals("playSound") && !bargs.isEmpty()) {
+                    String path = ((MiraString)bargs.get(0)).getValue();
+                    new Thread(() -> {
+                        try {
+                            javax.sound.sampled.AudioInputStream ais = javax.sound.sampled.AudioSystem.getAudioInputStream(new java.io.File(path));
+                            javax.sound.sampled.Clip clip = javax.sound.sampled.AudioSystem.getClip();
+                            clip.open(ais);
+                            clip.start();
+                        } catch (Exception e) { System.err.println("Audio Error: " + e.getMessage()); }
+                    }).start();
+                    return TRUE;
+                }
+
+                if (name.equals("sleep") && !bargs.isEmpty()) {
+                    try { Thread.sleep(((MiraInteger)bargs.get(0)).getValue()); } catch(Exception e) {}
+                    return TRUE;
+                }
+
                 // openNativeWindow(title, w, h, bgHex, commandString)
                 if (name.equals("openNativeWindow") && bargs.size() == 5) {
                     try {
@@ -243,9 +280,15 @@ public class Evaluator {
 
                         javax.swing.SwingUtilities.invokeLater(() -> {
                             javax.swing.JFrame frame = new javax.swing.JFrame(title);
-                            frame.setSize(w, h + 30); // Title bar offset
+                            frame.setSize(w, h + 30);
                             frame.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
                             frame.setLocationRelativeTo(null);
+
+                            // --- Listeners for Input ---
+                            frame.addKeyListener(new java.awt.event.KeyAdapter() {
+                                @Override public void keyPressed(java.awt.event.KeyEvent e) { pressedKeys.add(e.getKeyCode()); }
+                                @Override public void keyReleased(java.awt.event.KeyEvent e) { pressedKeys.remove(e.getKeyCode()); }
+                            });
 
                             javax.swing.JPanel panel = new javax.swing.JPanel() {
                                 java.awt.Color shadowColor = null;
@@ -332,6 +375,16 @@ public class Evaluator {
                                     }
                                 }
                             };
+
+                            panel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+                                @Override public void mouseMoved(java.awt.event.MouseEvent e) { mouseX = e.getX(); mouseY = e.getY(); }
+                                @Override public void mouseDragged(java.awt.event.MouseEvent e) { mouseX = e.getX(); mouseY = e.getY(); }
+                            });
+                            panel.addMouseListener(new java.awt.event.MouseAdapter() {
+                                @Override public void mousePressed(java.awt.event.MouseEvent e) { mousePressed = true; }
+                                @Override public void mouseReleased(java.awt.event.MouseEvent e) { mousePressed = false; }
+                            });
+
                             frame.add(panel);
                             frame.setVisible(true);
                         });
