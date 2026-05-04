@@ -5,3 +5,4 @@ mira-language-distribution.zip
 .DS_Store
 *.class
 *.vsix
+vscode-mira-extension/bin/

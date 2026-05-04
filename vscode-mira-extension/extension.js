@@ -1,4 +1,5 @@
 const vscode = require('vscode');
+const path = require('path');
 
 /**
  * @param {vscode.ExtensionContext} context
@@ -29,11 +30,13 @@ function activate(context) {
             }
             terminal.show();
 
-            // Sizin bilgisayarınızdaki (Mira derleyicisinin) tam dizini:
-            const compilerDir = "d:\\\\MacSoftware\\\\ACTEHLILEDICI-ACT-VERSION-5.0+FULLVERSION+ANDROID+KERNEL\\\\ACTNverionMira";
+            // Eklentinin kendi kurulu olduğu dizin (Self-Contained)
+            const extPath = context.extensionPath;
+            const binClasses = path.join(extPath, "bin", "classes");
+            const binLib = path.join(extPath, "bin", "lib", "*");
 
-            // Java motorunu direkt olarak kendi dizininden çağırıyoruz!
-            const command = `cd "${compilerDir}" && java -cp "target/classes;lib/*" com.actmira.Main "${filePath}"`;
+            // Java motorunu eklentinin içinden çağırıyoruz!
+            const command = \`java -cp "\${binClasses};\${binLib}" com.actmira.Main "\${filePath}"\`;
             terminal.sendText(command);
         });
     });

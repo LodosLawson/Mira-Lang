@@ -1,0 +1,72 @@
+// ============================================================
+// stdlib/canvas2d.mira  —  MiraIDE 2D Canvas Library
+// Dual Rendering Engine: WEB (HTML5 Canvas) and NATIVE (Java2D GPU)
+// Usage: import "stdlib/canvas2d";
+// ============================================================
+
+// ── RENDER MODE ──
+// Set this to "WEB" to render in Browser/HTML
+// Set this to "NATIVE" to render in Native Window (GPU accelerated)
+let RENDER_MODE = "NATIVE";
+
+fn _cv_head(w, h, bg) { return "<!DOCTYPE html><html><head><style>body{margin:0;background:#0c0e12;display:flex;justify-content:center;align-items:center;height:100vh}canvas{background:" + bg + ";box-shadow:0 10px 30px rgba(0,0,0,0.5);border-radius:8px}</style></head><body><canvas id='c' width='" + w + "' height='" + h + "'></canvas><script>const ctx=document.getElementById('c').getContext('2d');"; }
+fn _cv_foot() { return "</script></body></html>"; }
+
+// ── SHAPE FUNCTIONS ──
+// They return Web JS syntax OR Native Command String based on RENDER_MODE
+
+fn clearCanvas(w, h, color) {
+    if (RENDER_MODE == "WEB") { return "ctx.fillStyle='" + color + "';ctx.fillRect(0,0," + w + "," + h + ");"; }
+    return ""; // Native handles background automatically via openNativeWindow args
+}
+
+fn drawRect(x, y, w, h, color) {
+    if (RENDER_MODE == "WEB") { return "ctx.fillStyle='" + color + "';ctx.fillRect(" + x + "," + y + "," + w + "," + h + ");"; }
+    return "rect," + x + "," + y + "," + w + "," + h + "," + color + ";";
+}
+
+fn drawRoundRect(x, y, w, h, r, color) {
+    if (RENDER_MODE == "WEB") { return "ctx.fillStyle='" + color + "';ctx.beginPath();ctx.roundRect(" + x + "," + y + "," + w + "," + h + "," + r + ");ctx.fill();"; }
+    return "roundRect," + x + "," + y + "," + w + "," + h + "," + r + "," + color + ";";
+}
+
+fn drawCircle(x, y, r, color) {
+    if (RENDER_MODE == "WEB") { return "ctx.beginPath();ctx.arc(" + x + "," + y + "," + r + ",0,Math.PI*2);ctx.fillStyle='" + color + "';ctx.fill();"; }
+    return "circle," + x + "," + y + "," + r + "," + color + ";";
+}
+
+fn drawLine(x1, y1, x2, y2, lw, color) {
+    if (RENDER_MODE == "WEB") { return "ctx.strokeStyle='" + color + "';ctx.lineWidth=" + lw + ";ctx.beginPath();ctx.moveTo(" + x1 + "," + y1 + ");ctx.lineTo(" + x2 + "," + y2 + ");ctx.stroke();"; }
+    return "line," + x1 + "," + y1 + "," + x2 + "," + y2 + "," + color + "," + lw + ";";
+}
+
+fn drawText(text, x, y, size, color, font) {
+    if (RENDER_MODE == "WEB") { return "ctx.fillStyle='" + color + "';ctx.font='bold " + size + "px " + font + "';ctx.fillText('" + text + "'," + x + "," + y + ");"; }
+    return "text," + x + "," + y + "," + color + "," + size + "," + text + ";";
+}
+
+fn drawTextCentered(text, x, y, size, color) {
+    if (RENDER_MODE == "WEB") { return "ctx.fillStyle='" + color + "';ctx.font='bold " + size + "px Inter,sans-serif';ctx.textAlign='center';ctx.fillText('" + text + "'," + x + "," + y + ");ctx.textAlign='left';"; }
+    return "textCenter," + x + "," + y + "," + color + "," + size + "," + text + ";";
+}
+
+fn setShadow(color, blur, ox, oy) {
+    if (RENDER_MODE == "WEB") { return "ctx.shadowColor='" + color + "';ctx.shadowBlur=" + blur + ";ctx.shadowOffsetX=" + ox + ";ctx.shadowOffsetY=" + oy + ";"; }
+    return "shadow," + color + "," + blur + "," + ox + "," + oy + ";";
+}
+
+fn clearShadow() {
+    if (RENDER_MODE == "WEB") { return "ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;"; }
+    return "clearShadow;";
+}
+
+// ── RENDERING TRIGGER ──
+
+fn renderCanvas2d(w, h, bg, commands) {
+    if (RENDER_MODE == "NATIVE") {
+        openNativeWindow("MiraIDE Native Canvas", w, h, bg, commands);
+    } else {
+        let html = _cv_head(w, h, bg) + clearCanvas(w, h, bg) + commands + _cv_foot();
+        openBrowser(html);
+    }
+}
