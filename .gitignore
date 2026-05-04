@@ -1,0 +1,7 @@
+target/
+out.txt
+test_output.txt
+mira-language-distribution.zip
+.DS_Store
+*.class
+*.vsix

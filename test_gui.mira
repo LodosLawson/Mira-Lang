@@ -1,0 +1,17 @@
+import "stdlib/canvas2d";
+
+// Since we are running outside IDE context for this test, we can use either mode:
+// let RENDER_MODE = "NATIVE"; // This is default in the file
+// let RENDER_MODE = "WEB"; // If we want HTML
+
+let cmd = clearCanvas(800, 600, "#0c0e12");
+cmd = cmd + drawRect(100, 100, 200, 150, "#ff0000");
+cmd = cmd + setShadow("#000000", 20, 10, 10);
+cmd = cmd + drawRoundRect(400, 100, 200, 150, 20, "#00ff00");
+cmd = cmd + clearShadow();
+cmd = cmd + drawCircle(200, 400, 80, "#0000ff");
+cmd = cmd + drawLine(400, 400, 600, 400, 5, "#ffffff");
+cmd = cmd + drawText("Native GPU Engine!", 400, 500, 30, "#ffff00", "Arial");
+cmd = cmd + drawTextCentered("Dual Mode is Working", 400, 550, 20, "#ff00ff");
+
+renderCanvas2d(800, 600, "#0c0e12", cmd);

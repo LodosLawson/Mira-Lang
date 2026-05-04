@@ -1,0 +1,2 @@
+import "stdlib/canvas2d";
+print(setShadow);

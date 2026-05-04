@@ -1,0 +1,108 @@
+// ============================================================
+// stdlib/collections.mira  —  MiraIDE Collections Library
+// Stack, Queue, and Counter implemented in pure Mira.
+// Usage: import "stdlib/collections";
+// ============================================================
+
+// ─── STACK ───────────────────────────────────────────────────
+// A stack is an array. Use these functions to treat it as LIFO.
+
+// stackNew() — Create an empty stack
+fn stackNew() {
+    return [];
+}
+
+// stackSize(stack) — Number of items in stack
+fn stackSize(stack) {
+    return length(stack);
+}
+
+// stackIsEmpty(stack) — True if stack has no items
+fn stackIsEmpty(stack) {
+    if (length(stack) == 0) { return true; }
+    return false;
+}
+
+// stackPeek(stack) — View top item without removing
+fn stackPeek(stack) {
+    let top = length(stack) - 1;
+    return stack[top];
+}
+
+// Note: push/pop mutate via reassignment in calling code.
+// Example usage:
+//   let s = stackNew();
+//   s = [s[0], s[1], newItem];   // push (manual)
+//   let top = stackPeek(s);       // peek
+
+// ─── COUNTER ─────────────────────────────────────────────────
+// A simple frequency counter using parallel key/value arrays.
+
+// counterCount(keys, values, key) — Get count for key
+fn counterCount(keys, values, key) {
+    let i = 0;
+    while (i < length(keys)) {
+        if (keys[i] == key) {
+            return values[i];
+        }
+        i = i + 1;
+    }
+    return 0;
+}
+
+// ─── RANGE ───────────────────────────────────────────────────
+// range(from, to) — Generates a string of numbers from..to
+fn range(from, to) {
+    let result = "";
+    let i = from;
+    while (i < to + 1) {
+        if (i == from) {
+            result = i;
+        } else {
+            result = result + ", " + i;
+        }
+        i = i + 1;
+    }
+    return result;
+}
+
+// ─── PAIR ────────────────────────────────────────────────────
+// Pairs are two-element arrays: [key, value]
+
+// pairNew(key, value) — Create a pair
+fn pairNew(key, value) {
+    return [key, value];
+}
+
+// pairKey(pair) — Get the key of a pair
+fn pairKey(pair) {
+    return pair[0];
+}
+
+// pairValue(pair) — Get the value of a pair
+fn pairValue(pair) {
+    return pair[1];
+}
+
+// ─── TABLE RENDERER ──────────────────────────────────────────
+// renderTable(headers, rows) — Render an HTML table
+// headers: array of strings, rows: array of arrays
+fn renderTableRow(cells) {
+    let row = "<tr>";
+    let i = 0;
+    while (i < length(cells)) {
+        row = row + "<td style='padding:8px 12px;border:1px solid #424754;color:#c2c6d6'>" + cells[i] + "</td>";
+        i = i + 1;
+    }
+    return row + "</tr>";
+}
+
+fn renderTableHeader(cells) {
+    let row = "<tr>";
+    let i = 0;
+    while (i < length(cells)) {
+        row = row + "<th style='padding:8px 12px;border:1px solid #424754;background:#0c0e12;color:#8c909f;text-align:left'>" + cells[i] + "</th>";
+        i = i + 1;
+    }
+    return row + "</tr>";
+}

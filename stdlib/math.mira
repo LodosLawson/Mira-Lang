@@ -1,0 +1,102 @@
+// ============================================================
+// stdlib/math.mira  —  MiraIDE Standard Math Library
+// Written entirely in the Mira language.
+// Usage: import "stdlib/math";
+// ============================================================
+
+// abs(n) — Returns absolute value of n
+fn abs(n) {
+    if (n < 0) {
+        return 0 - n;
+    }
+    return n;
+}
+
+// max(a, b) — Returns the larger of two numbers
+fn max(a, b) {
+    if (a > b) {
+        return a;
+    }
+    return b;
+}
+
+// min(a, b) — Returns the smaller of two numbers
+fn min(a, b) {
+    if (a < b) {
+        return a;
+    }
+    return b;
+}
+
+// pow(base, exp) — Returns base raised to the power exp (integer)
+fn pow(base, exp) {
+    let result = 1;
+    let i = 0;
+    while (i < exp) {
+        result = result * base;
+        i = i + 1;
+    }
+    return result;
+}
+
+// factorial(n) — Returns n!
+fn factorial(n) {
+    if (n < 2) {
+        return 1;
+    }
+    let result = 1;
+    let i = 2;
+    while (i < n + 1) {
+        result = result * i;
+        i = i + 1;
+    }
+    return result;
+}
+
+// clamp(value, lo, hi) — Clamp value between lo and hi
+fn clamp(value, lo, hi) {
+    if (value < lo) { return lo; }
+    if (value > hi) { return hi; }
+    return value;
+}
+
+// sum(arr) — Sum all elements of a numeric array
+fn sum(arr) {
+    let total = 0;
+    let i = 0;
+    while (i < length(arr)) {
+        total = total + arr[i];
+        i = i + 1;
+    }
+    return total;
+}
+
+// average(arr) — Average of a numeric array
+fn average(arr) {
+    let len = length(arr);
+    if (len == 0) { return 0; }
+    return sum(arr) / len;
+}
+
+// isEven(n) — Returns true if n is even
+fn isEven(n) {
+    let half = n / 2;
+    if (half * 2 == n) { return true; }
+    return false;
+}
+
+// isOdd(n)
+fn isOdd(n) {
+    if (isEven(n) == true) { return false; }
+    return true;
+}
+
+// gcd(a, b) — Greatest common divisor (Euclidean)
+fn gcd(a, b) {
+    while (b != 0) {
+        let temp = b;
+        b = a - (a / b) * b;
+        a = temp;
+    }
+    return a;
+}

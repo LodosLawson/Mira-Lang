@@ -1,0 +1,12 @@
+import "stdlib/canvas2d";
+print(RENDER_MODE);
+print(clearCanvas);
+print(drawRect);
+print(drawRoundRect);
+print(drawCircle);
+print(drawLine);
+print(drawText);
+print(drawTextCentered);
+print(setShadow);
+print(clearShadow);
+print(renderCanvas2d);

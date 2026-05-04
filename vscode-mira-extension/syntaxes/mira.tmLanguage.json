@@ -1,0 +1,79 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Mira",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#constants"
+    },
+    {
+      "include": "#functions"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.mira",
+          "match": "//.*$"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.mira",
+          "match": "\\b(if|else|while|return|import)\\b"
+        },
+        {
+          "name": "keyword.declaration.mira",
+          "match": "\\b(let|fn)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "name": "string.quoted.double.mira",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.mira",
+          "match": "\\\\."
+        }
+      ]
+    },
+    "constants": {
+      "patterns": [
+        {
+          "name": "constant.numeric.mira",
+          "match": "\\b[0-9]+\\b"
+        },
+        {
+          "name": "constant.language.mira",
+          "match": "\\b(true|false|null)\\b"
+        }
+      ]
+    },
+    "functions": {
+      "patterns": [
+        {
+          "name": "support.function.mira",
+          "match": "\\b(print|length|readFile|writeFile|openBrowser|render|clearCanvas|drawRect|drawRoundRect|drawCircle|drawLine|drawText|drawTextCentered|setShadow|clearShadow|renderCanvas2d)\\b"
+        },
+        {
+          "name": "entity.name.function.mira",
+          "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\s*(?=\\()"
+        }
+      ]
+    }
+  },
+  "scopeName": "source.mira"
+}

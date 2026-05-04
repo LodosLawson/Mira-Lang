@@ -1,0 +1,43 @@
+import "stdlib/canvas2d";
+
+// ── MIRA NATIVE RENDERING DEMO ──
+// RENDER_MODE is set to "NATIVE" by default in canvas2d.mira,
+// so this will open a desktop GPU-accelerated window automatically.
+
+let w = 800;
+let h = 600;
+let bg = "#1e1e2e"; // Mocha Dark Theme
+
+// 1. Arka planı temizle ve motor komutunu başlat
+let cmd = clearCanvas(w, h, bg);
+
+// 2. Gölge Efekti Tanımla (Kartlar için)
+cmd = cmd + setShadow("#000000", 25, 0, 15);
+
+// 3. Ortaya büyük bir modern kart çiz (Yuvarlak Köşeli)
+cmd = cmd + drawRoundRect(200, 150, 400, 300, 24, "#313244");
+
+// 4. Gölgeyi temizle ki diğer elemanlara bulaşmasın
+cmd = cmd + clearShadow();
+
+// 5. Kartın içine dekoratif nesneler çiz
+// Renkli bir daire
+cmd = cmd + drawCircle(400, 250, 60, "#cba6f7");
+
+// Dikdörtgen bir bar
+cmd = cmd + drawRect(250, 360, 300, 20, "#89b4fa");
+
+// Çapraz neon bir çizgi
+cmd = cmd + drawLine(250, 180, 550, 180, 4, "#f38ba8");
+
+// 6. Tipografi ve Yazılar
+// Başlık
+cmd = cmd + drawTextCentered("MiraIDE Native Graphics", 400, 90, 36, "#a6e3a1");
+
+// Kart İçi Metin
+cmd = cmd + drawTextCentered("GPU Accelerated Canvas", 400, 260, 20, "#1e1e2e");
+cmd = cmd + drawTextCentered("Powered by Java2D", 400, 420, 18, "#bac2de");
+
+// 7. Ekrana Çizdir!
+// "renderCanvas2d" bizim için otomatik olarak bilgisayarda bir pencere açar.
+renderCanvas2d(w, h, bg, cmd);

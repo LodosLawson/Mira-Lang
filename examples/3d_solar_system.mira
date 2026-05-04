@@ -1,0 +1,21 @@
+// ============================================================
+// MiraIDE — 3D Solar System
+// F5 ile çalıştır → Tarayıcıda açılır, kamera döner
+// ============================================================
+
+import "stdlib/graphics";
+
+let sun     = addSphere(0, 0, 0,     1.8,  "0xf97316");
+let mercury = addSphere(3.5, 0, 0,   0.3,  "0x8c909f");
+let venus   = addSphere(5,   0, 0,   0.5,  "0xffb690");
+let earth   = addSphere(7,   0, 0,   0.55, "0x3b82f6");
+let moon    = addSphere(7.9, 0.3, 0, 0.15, "0xc2c6d6");
+let mars    = addSphere(9.5, 0, 0,   0.4,  "0xec6a06");
+let jupiter = addSphere(13,  0, 0,   1.0,  "0xffb690");
+let saturn  = addSphere(17,  0, 0,   0.85, "0xf5d47b");
+let ring    = addTorus(17, 0, 0,     1.4, 0.18, "0xd4a847");
+
+let all = sun + mercury + venus + earth + moon + mars + jupiter + saturn + ring;
+
+renderScene3d(60, all);
+print("Solar System opened in browser!");

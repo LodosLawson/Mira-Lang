@@ -1,0 +1,53 @@
+// ============================================================
+// stdlib/graphics.mira  —  MiraIDE 3D Graphics Library
+// Three.js powered — generates HTML+JS, opens in browser.
+// Usage: import "stdlib/graphics";
+// ============================================================
+// RENDER TARGETS:
+//   renderScene3d(fov, objects)        — browser, orbiting camera
+//   renderScene3dStatic(fov, objects)  — browser, static camera
+//   renderScene3dToPage(fov, objects)  — IDE Live Preview panel (static)
+// ============================================================
+
+fn _gfx_head() { return "<!DOCTYPE html><html><head><meta charset='UTF-8'><style>*{margin:0;padding:0}body{background:#0c0e12;overflow:hidden}</style></head><body><script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'></script><script>"; }
+fn _gfx_foot() { return "</script></body></html>"; }
+
+fn sceneInit(fov) { return "const scene=new THREE.Scene();const W=window.innerWidth,H=window.innerHeight;const camera=new THREE.PerspectiveCamera(" + fov + ",W/H,0.1,1000);camera.position.set(6,5,8);camera.lookAt(0,0,0);const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setSize(W,H);renderer.shadowMap.enabled=true;renderer.setClearColor(0x0c0e12);document.body.appendChild(renderer.domElement);window.addEventListener('resize',()=>{camera.aspect=window.innerWidth/window.innerHeight;camera.updateProjectionMatrix();renderer.setSize(window.innerWidth,window.innerHeight);});"; }
+
+fn ambientLight(intensity) { return "scene.add(new THREE.AmbientLight(0x404060," + intensity + "));"; }
+fn directionalLight(x, y, z) { return "const dl=new THREE.DirectionalLight(0xffffff,1.2);dl.position.set(" + x + "," + y + "," + z + ");dl.castShadow=true;scene.add(dl);"; }
+fn pointLight(x, y, z, color, intensity) { return "const pl" + x + "x" + y + "=new THREE.PointLight(" + color + "," + intensity + ",50);pl" + x + "x" + y + ".position.set(" + x + "," + y + "," + z + ");scene.add(pl" + x + "x" + y + ");"; }
+
+fn gridHelper(size, divisions) { return "scene.add(new THREE.GridHelper(" + size + "," + divisions + ",0x3b82f6,0x424754));"; }
+fn axesHelper(size) { return "scene.add(new THREE.AxesHelper(" + size + "));"; }
+
+fn addBox(x, y, z, w, h, d, hexColor) { return "(()=>{const m=new THREE.Mesh(new THREE.BoxGeometry(" + w + "," + h + "," + d + "),new THREE.MeshLambertMaterial({color:" + hexColor + "}));m.position.set(" + x + "," + y + "," + z + ");m.castShadow=true;m.receiveShadow=true;scene.add(m);})();"; }
+fn addSphere(x, y, z, radius, hexColor) { return "(()=>{const m=new THREE.Mesh(new THREE.SphereGeometry(" + radius + ",32,32),new THREE.MeshLambertMaterial({color:" + hexColor + "}));m.position.set(" + x + "," + y + "," + z + ");m.castShadow=true;scene.add(m);})();"; }
+fn addCylinder(x, y, z, radiusTop, radiusBot, height, hexColor) { return "(()=>{const m=new THREE.Mesh(new THREE.CylinderGeometry(" + radiusTop + "," + radiusBot + "," + height + ",32),new THREE.MeshLambertMaterial({color:" + hexColor + "}));m.position.set(" + x + "," + y + "," + z + ");m.castShadow=true;scene.add(m);})();"; }
+fn addCone(x, y, z, radius, height, hexColor) { return "(()=>{const m=new THREE.Mesh(new THREE.ConeGeometry(" + radius + "," + height + ",32),new THREE.MeshLambertMaterial({color:" + hexColor + "}));m.position.set(" + x + "," + y + "," + z + ");m.castShadow=true;scene.add(m);})();"; }
+fn addTorus(x, y, z, radius, tube, hexColor) { return "(()=>{const m=new THREE.Mesh(new THREE.TorusGeometry(" + radius + "," + tube + ",16,100),new THREE.MeshLambertMaterial({color:" + hexColor + "}));m.position.set(" + x + "," + y + "," + z + ");m.castShadow=true;scene.add(m);})();"; }
+fn addPlane(y, size, hexColor) { return "(()=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(" + size + "," + size + "),new THREE.MeshLambertMaterial({color:" + hexColor + "}));m.rotation.x=-Math.PI/2;m.position.y=" + y + ";m.receiveShadow=true;scene.add(m);})();"; }
+fn addWireBox(x, y, z, w, h, d, hexColor) { return "(()=>{const m=new THREE.Mesh(new THREE.BoxGeometry(" + w + "," + h + "," + d + "),new THREE.MeshBasicMaterial({color:" + hexColor + ",wireframe:true}));m.position.set(" + x + "," + y + "," + z + ");scene.add(m);})();"; }
+
+fn _orbitLoop() { return "let _t=0;function animate(){requestAnimationFrame(animate);_t+=0.005;camera.position.x=Math.sin(_t)*9;camera.position.z=Math.cos(_t)*9;camera.lookAt(0,0,0);renderer.render(scene,camera);}animate();"; }
+fn _staticLoop() { return "function animate(){requestAnimationFrame(animate);renderer.render(scene,camera);}animate();"; }
+fn _defaultLights() { return ambientLight(1) + directionalLight(5, 10, 5) + pointLight(0, 4, 0, "0x3b82f6", 2); }
+fn _defaultGrid() { return gridHelper(20, 20) + axesHelper(3); }
+
+// ── Render to BROWSER with orbiting camera (recommended for 3D)
+fn renderScene3d(fov, objects) {
+    let page = _gfx_head() + sceneInit(fov) + _defaultLights() + _defaultGrid() + objects + _orbitLoop() + _gfx_foot();
+    openBrowser(page);
+}
+
+// ── Render to BROWSER with static camera
+fn renderScene3dStatic(fov, objects) {
+    let page = _gfx_head() + sceneInit(fov) + _defaultLights() + _defaultGrid() + objects + _staticLoop() + _gfx_foot();
+    openBrowser(page);
+}
+
+// ── Render to IDE Live Preview panel (no animation, embedded)
+fn renderScene3dToPage(fov, objects) {
+    let page = _gfx_head() + sceneInit(fov) + _defaultLights() + _defaultGrid() + objects + _staticLoop() + _gfx_foot();
+    render(page);
+}

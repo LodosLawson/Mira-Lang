@@ -1,0 +1,81 @@
+// ============================================================
+// MiraIDE — 2D Animasyonlu Parçacık Sistemi
+// stdlib/canvas2d kullanımı - canlı animasyon
+// F5 ile çalıştır, tarayıcıda açılır
+// ============================================================
+
+import "stdlib/canvas2d";
+
+// Animasyon döngüsü - JS içinde çalışır, _frame ile zaman
+let loopBody =
+    "const cx=canvas.width/2,cy=canvas.height/2;"
+  + "const t=_frame*0.02;"
+
+  // Arka plan parlaması
+  + "const bg=ctx.createRadialGradient(cx,cy,0,cx,cy,300);"
+  + "bg.addColorStop(0,'#0f172a');bg.addColorStop(1,'#0c0e12');"
+  + "ctx.fillStyle=bg;ctx.fillRect(0,0,canvas.width,canvas.height);"
+
+  // 12 adet yörünge halkası
+  + "for(let i=1;i<=12;i++){"
+  + "  const r=i*28;"
+  + "  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);"
+  + "  ctx.strokeStyle='rgba(66,71,84,0.3)';ctx.lineWidth=0.5;ctx.stroke();"
+  + "}"
+
+  // Merkez ışık topu
+  + "const core=ctx.createRadialGradient(cx,cy,0,cx,cy,40);"
+  + "core.addColorStop(0,'#adc6ff');core.addColorStop(0.4,'#3b82f6');core.addColorStop(1,'transparent');"
+  + "ctx.beginPath();ctx.arc(cx,cy,40,0,Math.PI*2);"
+  + "ctx.fillStyle=core;ctx.fill();"
+
+  // 8 adet dönen parçacık
+  + "const colors=['#3b82f6','#a855f7','#f97316','#22c55e','#adc6ff','#ddb7ff','#ffb690','#86efac'];"
+  + "for(let i=0;i<8;i++){"
+  + "  const angle=t+i*(Math.PI*2/8);"
+  + "  const r=120+Math.sin(t*2+i)*40;"
+  + "  const px=cx+Math.cos(angle)*r;"
+  + "  const py=cy+Math.sin(angle)*r;"
+  + "  const sz=6+Math.sin(t*3+i)*3;"
+  // iz çizgisi
+  + "  for(let j=1;j<=8;j++){"
+  + "    const ta=angle-j*0.08;"
+  + "    const tr=r-j*2;"
+  + "    const tx=cx+Math.cos(ta)*tr;"
+  + "    const ty=cy+Math.sin(ta)*tr;"
+  + "    ctx.beginPath();ctx.arc(tx,ty,sz*(1-j/9),0,Math.PI*2);"
+  + "    ctx.fillStyle=colors[i].replace(')',','+(0.1-j*0.01)+')');"
+  + "    ctx.fill();"
+  + "  }"
+  // ana top
+  + "  const g=ctx.createRadialGradient(px,py,0,px,py,sz*2);"
+  + "  g.addColorStop(0,'white');g.addColorStop(0.3,colors[i]);g.addColorStop(1,'transparent');"
+  + "  ctx.beginPath();ctx.arc(px,py,sz,0,Math.PI*2);"
+  + "  ctx.fillStyle=g;ctx.fill();"
+  + "}"
+
+  // İkinci halka katmanı (ters yön)
+  + "for(let i=0;i<6;i++){"
+  + "  const angle=-t*0.7+i*(Math.PI*2/6);"
+  + "  const r=180+Math.cos(t+i)*25;"
+  + "  const px=cx+Math.cos(angle)*r;"
+  + "  const py=cy+Math.sin(angle)*r;"
+  + "  const sz=4+Math.sin(t*2+i)*2;"
+  + "  const g=ctx.createRadialGradient(px,py,0,px,py,sz*2);"
+  + "  g.addColorStop(0,'white');g.addColorStop(0.3,'#22c55e');g.addColorStop(1,'transparent');"
+  + "  ctx.beginPath();ctx.arc(px,py,sz,0,Math.PI*2);"
+  + "  ctx.fillStyle=g;ctx.fill();"
+  + "}"
+
+  // Başlık
+  + "ctx.fillStyle='rgba(173,198,255,0.9)';"
+  + "ctx.font='bold 22px Inter,sans-serif';"
+  + "ctx.textAlign='center';"
+  + "ctx.fillText('MiraIDE Particle System',cx,50);"
+  + "ctx.font='12px Inter,sans-serif';"
+  + "ctx.fillStyle='rgba(140,144,159,0.7)';"
+  + "ctx.fillText('stdlib/canvas2d  •  renderAnimatedCanvas()',cx,72);"
+  + "ctx.textAlign='left';";
+
+renderAnimatedCanvas(900, 600, "#0c0e12", loopBody);
+print("Particle animation opened in browser!");

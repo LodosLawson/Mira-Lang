@@ -1,0 +1,31 @@
+// ============================================================
+// MiraIDE — Dual Rendering Mode (NATIVE vs WEB)
+// ============================================================
+
+import "stdlib/canvas2d";
+
+// DİKKAT: Çizimin nerede yapılacağını seçin:
+// "NATIVE" -> Bilgisayar üzerinde, Java2D (GPU destekli) ayrı pencerede açılır
+// "WEB"    -> İnternet tarayıcısında (HTML5 Canvas) açılır
+let RENDER_MODE = "NATIVE";
+
+let w = 800;
+let h = 600;
+
+// Çizim komutları (her iki modda da aynı kod çalışır!)
+let s1 = setShadow("#00000088", 15, 0, 10);
+let b1 = drawRoundRect(200, 150, 400, 300, 30, "#1e293b");
+
+let c1 = clearShadow();
+let b2 = drawRect(200, 150, 400, 10, "#3b82f6");
+
+let t1 = drawTextCentered("MIRA NATIVE ENGINE", 400, 280, 36, "#ffffff");
+let t2 = drawTextCentered("GPU Accelerated Drawing", 400, 320, 20, "#94a3b8");
+
+let circ = drawCircle(400, 400, 40, "#10b981");
+
+let all = s1 + b1 + c1 + b2 + t1 + t2 + circ;
+
+// Render işlemini başlat (RENDER_MODE'a göre hedefe karar verir)
+renderCanvas2d(w, h, "#0f172a", all);
+print("Rendered in " + RENDER_MODE + " mode!");

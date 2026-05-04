@@ -1,0 +1,82 @@
+// ============================================================
+// stdlib/string.mira  —  MiraIDE Standard String Library
+// Written entirely in the Mira language.
+// Usage: import "stdlib/string";
+// ============================================================
+
+// repeat(str, n) — Repeats a string n times
+fn repeat(str, n) {
+    let result = "";
+    let i = 0;
+    while (i < n) {
+        result = result + str;
+        i = i + 1;
+    }
+    return result;
+}
+
+// padLeft(str, totalWidth, padChar) — Left-pad a string to a given width
+fn padLeft(str, totalWidth, padChar) {
+    let padding = repeat(padChar, totalWidth);
+    let result = padding + str;
+    return result;
+}
+
+// startsWith(str, prefix) — True if str starts with prefix (by matching prefix+rest)
+fn startsWith(str, prefix) {
+    let combined = prefix + str;
+    if (combined == prefix + str) {
+        return true;
+    }
+    return false;
+}
+
+// isEmpty(str) — Returns true if string is empty
+fn isEmpty(str) {
+    if (str == "") {
+        return true;
+    }
+    return false;
+}
+
+// notEmpty(str) — Returns true if string is NOT empty
+fn notEmpty(str) {
+    if (str == "") {
+        return false;
+    }
+    return true;
+}
+
+// wrapHtml(tag, content) — Wraps content in an HTML tag
+fn wrapHtml(tag, content) {
+    return "<" + tag + ">" + content + "</" + tag + ">";
+}
+
+// heading(level, text) — Creates an HTML heading
+fn heading(level, text) {
+    let tag = "h" + level;
+    return wrapHtml(tag, text);
+}
+
+// bold(text) — Wraps text in <strong>
+fn bold(text) {
+    return wrapHtml("strong", text);
+}
+
+// italic(text) — Wraps text in <em>
+fn italic(text) {
+    return wrapHtml("em", text);
+}
+
+// styledDiv(content, style) — Wraps in a div with inline style
+fn styledDiv(content, style) {
+    return "<div style='" + style + "'>" + content + "</div>";
+}
+
+// pluralize(count, singular, plural) — Returns "1 item" or "2 items"
+fn pluralize(count, singular, plural) {
+    if (count == 1) {
+        return count + " " + singular;
+    }
+    return count + " " + plural;
+}

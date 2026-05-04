@@ -1,0 +1,117 @@
+// ============================================================
+// MiraIDE — 2D Dashboard UI
+// stdlib/canvas2d kullanımı - analitik panel
+// F5 ile çalıştır, tarayıcıda açılır
+// ============================================================
+
+import "stdlib/canvas2d";
+
+let W = 900;
+let H = 600;
+
+// === ARKA PLAN ===
+let bg = drawGradientRect(0, 0, W, H, "#0c0e12", "#111317");
+
+// === BAŞLIK ÇUBUĞU ===
+let titleBar  = drawRect(0, 0, W, 50, "#0c0e12");
+let titleText = drawTextCentered("MiraIDE Analytics Dashboard", 450, 32, "#adc6ff", 18);
+let divider   = drawLine(0, 50, W, 50, "#424754", 1);
+
+// === KART 1 — Kullanıcılar ===
+let card1 = setShadow("#3b82f6", 20, 0, 0)
+           + drawRoundRect(40, 80, 200, 110, 10, "#1a1c20")
+           + clearShadow()
+           + strokeRect(40, 80, 200, 110, "#3b82f644", 1)
+           + drawText("USERS",      55, 108, "#8c909f", 11, "Inter,sans-serif")
+           + drawText("12,840",     55, 148, "#e2e2e8", 32, "Inter,sans-serif")
+           + drawText("+8.2% this week", 55, 172, "#22c55e", 12, "Inter,sans-serif");
+
+// === KART 2 — Gelir ===
+let card2 = setShadow("#a855f7", 20, 0, 0)
+           + drawRoundRect(260, 80, 200, 110, 10, "#1a1c20")
+           + clearShadow()
+           + strokeRect(260, 80, 200, 110, "#a855f744", 1)
+           + drawText("REVENUE",    275, 108, "#8c909f", 11, "Inter,sans-serif")
+           + drawText("$94,200",    275, 148, "#e2e2e8", 32, "Inter,sans-serif")
+           + drawText("+12.5% this week", 275, 172, "#22c55e", 12, "Inter,sans-serif");
+
+// === KART 3 — Siparişler ===
+let card3 = setShadow("#f97316", 20, 0, 0)
+           + drawRoundRect(480, 80, 200, 110, 10, "#1a1c20")
+           + clearShadow()
+           + strokeRect(480, 80, 200, 110, "#f9731644", 1)
+           + drawText("ORDERS",     495, 108, "#8c909f", 11, "Inter,sans-serif")
+           + drawText("3,421",      495, 148, "#e2e2e8", 32, "Inter,sans-serif")
+           + drawText("-2.1% this week",  495, 172, "#f97316", 12, "Inter,sans-serif");
+
+// === KART 4 — Dönüşüm ===
+let card4 = setShadow("#22c55e", 20, 0, 0)
+           + drawRoundRect(700, 80, 160, 110, 10, "#1a1c20")
+           + clearShadow()
+           + strokeRect(700, 80, 160, 110, "#22c55e44", 1)
+           + drawText("CONVERSION", 715, 108, "#8c909f", 10, "Inter,sans-serif")
+           + drawText("4.7%",       715, 148, "#e2e2e8", 32, "Inter,sans-serif")
+           + drawText("+0.3% this week",  715, 172, "#22c55e", 12, "Inter,sans-serif");
+
+// === BAR GRAFİĞİ ===
+let chartBg   = drawRoundRect(40, 220, 520, 250, 10, "#1a1c20");
+let chartBdr  = strokeRect(40, 220, 520, 250, "#42475444", 1);
+let chartLbl  = drawText("WEEKLY PERFORMANCE", 55, 248, "#8c909f", 11, "Inter,sans-serif");
+
+// Bar verileri (yükseklikler)
+let bar1 = drawGradientRect(70,  390, 50, 65,  "#3b82f6", "#1e3a5f")
+         + drawTextCentered("Mon", 95,  420, "#8c909f", 10);
+let bar2 = drawGradientRect(140, 370, 50, 85,  "#3b82f6", "#1e3a5f")
+         + drawTextCentered("Tue", 165, 420, "#8c909f", 10);
+let bar3 = drawGradientRect(210, 330, 50, 125, "#a855f7", "#2c0051")
+         + drawTextCentered("Wed", 235, 420, "#8c909f", 10);
+let bar4 = drawGradientRect(280, 315, 50, 140, "#a855f7", "#2c0051")
+         + drawTextCentered("Thu", 305, 420, "#8c909f", 10);
+let bar5 = drawGradientRect(350, 295, 50, 160, "#22c55e", "#0d3321")
+         + drawTextCentered("Fri", 375, 420, "#8c909f", 10);
+let bar6 = drawGradientRect(420, 280, 50, 175, "#22c55e", "#0d3321")
+         + drawTextCentered("Sat", 445, 420, "#8c909f", 10);
+let bar7 = drawGradientRect(490, 320, 50, 135, "#f97316", "#341100")
+         + drawTextCentered("Sun", 515, 420, "#8c909f", 10);
+
+// Taban çizgisi
+let baseline = drawLine(55, 455, 545, 455, "#424754", 1);
+
+// === HALKA GRAFİĞİ ===
+let donutBg  = drawRoundRect(580, 220, 280, 250, 10, "#1a1c20");
+let donutBdr = strokeRect(580, 220, 280, 250, "#42475444", 1);
+let donutLbl = drawText("TRAFFIC SOURCES", 595, 248, "#8c909f", 11, "Inter,sans-serif");
+
+let donut1   = drawRing(720, 355, 70, 40, "#3b82f6");
+let donut2   = drawArc(720, 355, 55, 0, 140, "#a855f7", 30);
+let donut3   = drawArc(720, 355, 55, 145, 230, "#f97316", 30);
+let donutMid = drawRadialGradient(720, 355, 38, "#1a1c20", "#0c0e12");
+let donutPct = drawTextCentered("68%", 720, 360, "#e2e2e8", 18);
+let donutSub = drawTextCentered("Organic", 720, 378, "#8c909f", 11);
+
+// Halka efsanesi
+let leg1 = drawCircle(598, 415, 5, "#3b82f6")
+          + drawText("Organic  68%",  610, 420, "#c2c6d6", 11, "Inter,sans-serif");
+let leg2 = drawCircle(598, 435, 5, "#a855f7")
+          + drawText("Social   22%",  610, 440, "#c2c6d6", 11, "Inter,sans-serif");
+let leg3 = drawCircle(598, 455, 5, "#f97316")
+          + drawText("Direct   10%",  610, 460, "#c2c6d6", 11, "Inter,sans-serif");
+
+// === DURUM ÇUBUĞU ===
+let statusBar = drawRect(0, 578, W, 22, "#0c0e12")
+             + drawLine(0, 578, W, 578, "#424754", 1)
+             + drawText("MiraIDE v1.0  |  canvas2d stdlib  |  UTF-8", 10, 593, "#8c909f", 10, "Inter,sans-serif")
+             + drawText("Ready", W-50, 593, "#22c55e", 10, "Inter,sans-serif");
+
+// === RENDER ===
+let all = bg + titleBar + titleText + divider
+        + card1 + card2 + card3 + card4
+        + chartBg + chartBdr + chartLbl
+        + bar1 + bar2 + bar3 + bar4 + bar5 + bar6 + bar7 + baseline
+        + donutBg + donutBdr + donutLbl
+        + donut1 + donut2 + donut3 + donutMid + donutPct + donutSub
+        + leg1 + leg2 + leg3
+        + statusBar;
+
+renderCanvas2d(W, H, "#0c0e12", all);
+print("Dashboard opened in browser!");

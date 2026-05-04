@@ -1,0 +1,50 @@
+{
+  "name": "mira-lang",
+  "displayName": "Mira Language Support",
+  "description": "Syntax highlighting and language support for the Mira programming language",
+  "version": "1.0.0",
+  "publisher": "ACT",
+  "engines": {
+    "vscode": "^1.70.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "main": "./extension.js",
+  "activationEvents": [
+    "onLanguage:mira"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "mira.runFile",
+        "title": "Run Mira Code",
+        "icon": "$(play)"
+      }
+    ],
+    "menus": {
+      "editor/title/run": [
+        {
+          "command": "mira.runFile",
+          "when": "resourceLangId == mira",
+          "group": "navigation"
+        }
+      ]
+    },
+    "languages": [
+      {
+        "id": "mira",
+        "aliases": ["Mira", "mira"],
+        "extensions": [".mira"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "mira",
+        "scopeName": "source.mira",
+        "path": "./syntaxes/mira.tmLanguage.json"
+      }
+    ]
+  }
+}
