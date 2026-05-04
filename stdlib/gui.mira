@@ -1,0 +1,35 @@
+# Mira GUI Library
+# Provides high-level UI components for software development
+
+import "stdlib/canvas2d";
+import "stdlib/input";
+
+# Simple Button Component
+# Returns true if clicked
+let createButton = fn(x, y, w, h, text, color, hoverColor) {
+    let mouse = getMouse();
+    let isHover = (mouse.x > x) && (mouse.x < x + w) && (mouse.y > y) && (mouse.y < y + h);
+    
+    let bgColor = color;
+    if (isHover) { let bgColor = hoverColor; }
+    
+    let draw = drawRoundRect(x, y, w, h, 8, bgColor) + 
+               drawTextCentered(text, x + w/2, y + h/2 + 7, 16, "#FFFFFF");
+               
+    let clicked = isHover && mouse.pressed;
+    
+    return {"draw": draw, "clicked": clicked};
+};
+
+# Panel Component (Background for UI)
+let createPanel = fn(x, y, w, h, color, opacity) {
+    # opacity support could be added via hex alpha
+    return drawRoundRect(x, y, w, h, 12, color);
+};
+
+# Progress Bar Component
+let createProgressBar = fn(x, y, w, h, percent, color) {
+    let fillW = (percent / 100) * w;
+    return drawRect(x, y, w, h, "#333333") + 
+           drawRect(x, y, fillW, h, color);
+};

@@ -1,0 +1,73 @@
+# ============================================================
+# MiraIDE Software Example: Paint Studio Pro
+# Demonstrates: GUI, Mouse Input, State Management
+# ============================================================
+
+import "stdlib/canvas2d";
+import "stdlib/input";
+import "stdlib/gui";
+
+let W = 1000;
+let H = 700;
+
+# App State
+let brushColor = "#FFFFFF";
+let brushSize = 5;
+let points = []; # Store drawing history
+let lastX = 0;
+let lastY = 0;
+
+println("Launching Mira Paint Studio...");
+
+while (true) {
+    let cmds = "";
+    let mouse = getMouse();
+    
+    # 1. UI Background (Side Panel)
+    let cmds = cmds + createPanel(0, 0, 200, H, "#1A1D23", 100);
+    let cmds = cmds + drawText("MIRA PAINT", 30, 50, 24, "#6200EE", "Inter");
+    
+    # 2. Color Selection Buttons
+    let btnRed = createButton(30, 100, 140, 40, "RED", "#FF4444", "#CC3333");
+    if (btnRed.clicked) { let brushColor = "#FF4444"; }
+    let cmds = cmds + btnRed.draw;
+    
+    let btnGreen = createButton(30, 150, 140, 40, "GREEN", "#44FF44", "#33CC33");
+    if (btnGreen.clicked) { let brushColor = "#44FF44"; }
+    let cmds = cmds + btnGreen.draw;
+    
+    let btnBlue = createButton(30, 200, 140, 40, "BLUE", "#4444FF", "#3333CC");
+    if (btnBlue.clicked) { let brushColor = "#4444FF"; }
+    let cmds = cmds + btnBlue.draw;
+    
+    let btnClear = createButton(30, 600, 140, 40, "CLEAR", "#333333", "#555555");
+    if (btnClear.clicked) { let points = []; }
+    let cmds = cmds + btnClear.draw;
+
+    # 3. Drawing Logic
+    if (mouse.pressed && mouse.x > 200) {
+        # Only add point if mouse moved enough (optimization)
+        let dist = math.sqrt((mouse.x - lastX)*(mouse.x - lastX) + (mouse.y - lastY)*(mouse.y - lastY));
+        if (dist > 2) {
+            let points = points + [{"x": mouse.x, "y": mouse.y, "c": brushColor, "s": brushSize}];
+            let lastX = mouse.x;
+            let lastY = mouse.y;
+        }
+    }
+
+    # 4. Render Drawing History
+    let pi = 0;
+    while (pi < length(points)) {
+        let p = points[pi];
+        let cmds = cmds + drawCircle(p.x, p.y, p.s, p.c);
+        let pi = pi + 1;
+    }
+
+    # 5. Cursor Preview
+    if (mouse.x > 200) {
+        let cmds = cmds + drawCircle(mouse.x, mouse.y, brushSize, brushColor);
+    }
+
+    renderCanvas2d(W, H, "#0C0E12", cmds);
+    sleep(10); # High refresh rate for smooth drawing
+}
